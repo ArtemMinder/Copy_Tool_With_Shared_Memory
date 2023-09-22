@@ -8,7 +8,7 @@ using namespace boost::interprocess;
 
 void FileReader::processFile(const string& inputFileName, const string& outputFileName) {
     ifstream inputFile(inputFileName, ios::binary);
-    char data[1024 * 1024]; // Буфер размером 1 МБ
+    char data[1048576];
 
     while (inputFile.read(data, sizeof(data))) {
         shared_memory_object shm(open_or_create, "shared_memory", read_write);
