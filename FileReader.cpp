@@ -15,10 +15,12 @@ void FileReader::processFile(const string& inputFileName, const string& outputFi
     SharedData* sharedData = static_cast<SharedData*>(region.get_address());
     std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::app);
 
-    while (true) {
+    while (true) 
+    {
         scoped_lock<interprocess_mutex> lock(sharedData->mutex);
 
-        if (sharedData->dataExist) {
+        if (sharedData->dataExist) 
+        {
             outputFile.write(sharedData->buffer, sizeof(sharedData->buffer));
             sharedData->dataExist = false;
         }

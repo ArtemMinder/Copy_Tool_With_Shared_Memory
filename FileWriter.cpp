@@ -8,10 +8,11 @@
 using namespace std;
 using namespace boost::interprocess;
 
-void FileWriter::processFile(const string& inputFileName, const string& outputFileName, const string& sharedMemoryName) {
-
+void FileWriter::processFile(const string& inputFileName, const string& outputFileName, const string& sharedMemoryName) 
+{
     std::ifstream inputFile(inputFileName, std::ios::binary);
-    if (!inputFile.is_open()) {
+    if (!inputFile.is_open()) 
+    {
         std::cerr << "Error: Unable to open input file\n";
         return;
     }
@@ -21,8 +22,8 @@ void FileWriter::processFile(const string& inputFileName, const string& outputFi
     mapped_region region(sharedMemory, read_write);
     SharedData* sharedData = static_cast<SharedData*>(region.get_address());
 
-    while (inputFile) {
-
+    while (inputFile) 
+    {
         inputFile.read(sharedData->buffer, sizeof(sharedData->buffer));
         scoped_lock<interprocess_mutex> lock(sharedData->mutex);
         sharedData->dataExist = true;

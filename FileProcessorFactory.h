@@ -2,7 +2,8 @@
 
 #include "FileProcessor.h"
 
-class FileProcessorFactory {
+class FileProcessorFactory 
+{
 public:
     virtual FileProcessor* createFileProcessor() = 0;
     virtual ~FileProcessorFactory() {}

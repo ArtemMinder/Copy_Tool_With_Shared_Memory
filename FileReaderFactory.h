@@ -2,7 +2,8 @@
 
 #include "FileProcessorFactory.h"
 
-class FileReaderFactory : public FileProcessorFactory {
+class FileReaderFactory : public FileProcessorFactory 
+{
 public:
     FileProcessor* createFileProcessor() override;
 };
