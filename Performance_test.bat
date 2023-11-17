@@ -1,14 +1,16 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-set /A fileSize = 1000000000
-fsutil file createnew source.txt %fileSize%
-fsutil file createnew target.txt 1
+set "text=123//////////\\\\\\\\\\\\321"
+set "size=1048576"
+<nul set /p =%text% > source.txt
+
+type nul > target.txt
 
 set "startTime=%time%"
 
 start..\Debug\Copy_Tool_With_Shared_Memory.exe source.txt target.txt shm
-call..\DebugCopy_Tool_With_Shared_Memory.exe source.txt target.txt shm
+start..\Debug\Copy_Tool_With_Shared_Memory.exe source.txt target.txt shm
 set "endTime=%time%"
 
 set "end=!endTime:%time:~8,1%=%%100)*100+1!"  &  set "start=!startTime:%time:~8,1%=%%100)*100+1!"
@@ -23,6 +25,6 @@ echo End:      %endTime%
 echo Elapsed:  %hh:~1%%time:~2,1%%mm:~1%%time:~2,1%%ss:~1%%time:~8,1%%cc:~1%
 echo Speed: %speed% mb/s
 
-rem del source.txt
+del source.txt
 
 pause
