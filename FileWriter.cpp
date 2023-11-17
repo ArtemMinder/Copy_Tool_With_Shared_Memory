@@ -26,7 +26,6 @@ void FileWriter::processFile(const char* inputFileName, const char* outputFileNa
         inputFile.read(sharedData->buffer, sizeof(sharedData->buffer));
         scoped_lock<interprocess_mutex> lock(sharedData->mutex);
         sharedData->dataExist = true;
-        std::move(sharedData->buffer, sharedData->buffer + sizeof(sharedData->buffer), sharedData->buffer);
     }
 
     std::cout << "Write process completed.\n";
