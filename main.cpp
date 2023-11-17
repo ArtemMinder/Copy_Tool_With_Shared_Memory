@@ -33,24 +33,24 @@ int main(int argc, char* argv[])
 
         bool dataExist = false;
         {
-           scoped_lock<interprocess_mutex> lock(sharedData->mutex);
+          // scoped_lock<interprocess_mutex> lock(sharedData->mutex);
             dataExist = sharedData->dataExist;
         }
 
-        if (dataExist) 
-        {
-            std::cout << "Shared memory exists with data. Starting write process.\n";
+        if (!dataExist) 
+        {    
+            std::cout << "Shared memory exists without data. Starting read process.\n";
             factory = new FileWriterFactory();
         }
         else {
-            std::cout << "Shared memory exists without data. Starting read process.\n";
+            std::cout << "Shared memory exists with data. Starting write process.\n";
             factory = new FileReaderFactory();
         }
     }
     catch (const interprocess_exception& ex) 
     {
         std::cout << "Shared memory does not exist. Starting write process.\n";
-        factory = new FileWriterFactory();
+        factory = new FileReaderFactory();
     }
 
     FileProcessor* processor = factory->createFileProcessor();
