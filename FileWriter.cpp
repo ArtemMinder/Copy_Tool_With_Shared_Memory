@@ -5,10 +5,9 @@
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
-using namespace std;
 using namespace boost::interprocess;
 
-void FileWriter::processFile(const string& inputFileName, const string& outputFileName, const string& sharedMemoryName) 
+void FileWriter::processFile(const char* inputFileName, const char* outputFileName, const char* sharedMemoryName)
 {
     std::ifstream inputFile(inputFileName, std::ios::binary);
     if (!inputFile.is_open()) 

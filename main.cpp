@@ -4,7 +4,6 @@
 #include <fstream>
 #include "FileReaderFactory.h"
 #include "FileWriterFactory.h"
-#include "SharedMemoryHandler.h"
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -20,9 +19,9 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    std::string inputFileName = argv[1];
-    std::string outputFileName = argv[2];
-    std::string sharedMemoryObjectName = argv[3];
+    const char* inputFileName = argv[1];
+    const char* outputFileName = argv[2];
+    const char* sharedMemoryObjectName = argv[3];
    
     FileProcessorFactory* factory;
 
