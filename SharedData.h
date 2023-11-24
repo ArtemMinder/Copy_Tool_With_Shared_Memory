@@ -7,5 +7,6 @@ using namespace boost::interprocess;
 struct SharedData {
     char buffer[1048576];
     interprocess_mutex mutex;
-    bool dataExist = false;
+    bool dataExist;
+    SharedData() : dataExist(false) {}
 };

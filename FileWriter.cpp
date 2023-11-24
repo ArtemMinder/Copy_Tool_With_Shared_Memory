@@ -24,9 +24,11 @@ void FileWriter::processFile(const char* inputFileName, const char* outputFileNa
     while (inputFile) 
     {
         inputFile.read(sharedData->buffer, sizeof(sharedData->buffer));
-        scoped_lock<interprocess_mutex> lock(sharedData->mutex);
+        //scoped_lock<interprocess_mutex> lock(sharedData->mutex);
         sharedData->dataExist = true;
     }
+
+    inputFile.close();
 
     std::cout << "Write process completed.\n";
 }

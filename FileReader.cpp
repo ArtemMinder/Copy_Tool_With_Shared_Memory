@@ -10,21 +10,20 @@ using namespace boost::interprocess;
 
 void FileReader::processFile(const char* inputFileName, const char* outputFileName, const char* sharedMemoryName)
 {
-    shared_memory_object sharedMemory(open_only, sharedMemoryName, read_write);
-    mapped_region region(sharedMemory, read_write);
-    SharedData* sharedData = static_cast<SharedData*>(region.get_address());
-    std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::app);
+	shared_memory_object sharedMemory(open_only, sharedMemoryName, read_write);
+	mapped_region region(sharedMemory, read_write);
+	SharedData* sharedData = static_cast<SharedData*>(region.get_address());
+	std::ofstream outputFile(outputFileName, std::ios::binary | std::ios::app);
 
-    while (true) 
-    {
-        scoped_lock<interprocess_mutex> lock(sharedData->mutex);
+	if (sharedData->dataExist)
+	{
+		outputFile.write(sharedData->buffer, sizeof(sharedData->buffer));
+		sharedData->dataExist = false;
+	}
 
-        if (sharedData->dataExist) 
-        {
-            outputFile.write(sharedData->buffer, sizeof(sharedData->buffer));
-            sharedData->dataExist = false;
-        }
-    }
+	std::fill(std::begin(sharedData->buffer), std::end(sharedData->buffer), '\0');
 
-    std::cout << "Read process completed." << std::endl;
+	outputFile.close();
+
+	std::cout << "Read process completed." << std::endl;
 }
