@@ -2,6 +2,8 @@
 #include "SharedData.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
@@ -21,11 +23,23 @@ void FileWriter::processFile(const char* inputFileName, const char* outputFileNa
     mapped_region region(sharedMemory, read_write);
     SharedData* sharedData = static_cast<SharedData*>(region.get_address());
 
-    while (inputFile) 
+    while (inputFile.read(sharedData->buffer, sizeof(SharedData)))
     {
         inputFile.read(sharedData->buffer, sizeof(sharedData->buffer));
-        //scoped_lock<interprocess_mutex> lock(sharedData->mutex);
+        interprocess_mutex mutex(open_or_create);
+        scoped_lock<interprocess_mutex> lock(mutex);
+        sharedData += sizeof(SharedData);
+        ++sharedData->chunkIndex;
         sharedData->dataExist = true;
+    }
+
+    size_t lastChunkSize = inputFile.gcount();
+
+    if (lastChunkSize > 0) 
+    {
+        inputFile.read(sharedData->buffer, sizeof(sharedData->buffer));
+        interprocess_mutex mutex(open_or_create);
+        scoped_lock<interprocess_mutex> lock(mutex);
     }
 
     inputFile.close();
