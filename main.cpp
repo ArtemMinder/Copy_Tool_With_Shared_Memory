@@ -32,12 +32,7 @@ int main(int argc, char* argv[])
 		mapped_region region(sharedMemory, read_only);
 		SharedData* sharedData = static_cast<SharedData*>(region.get_address());
 
-		bool dataExist = false;
-
-		dataExist = sharedData->dataExist;
-
-
-		if (dataExist)
+		if (sharedData->ready)
 		{
 			std::cout << "Shared memory exists with data. Starting write process.\n";
 			factory = new FileReaderFactory();

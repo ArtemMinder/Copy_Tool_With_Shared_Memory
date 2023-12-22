@@ -2,6 +2,7 @@
 #include "SharedData.h"
 #include <iostream>
 #include <fstream>
+#include <thread> 
 #include <vector>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
@@ -23,23 +24,29 @@ void FileWriter::processFile(const char* inputFileName, const char* outputFileNa
     mapped_region region(sharedMemory, read_write);
     SharedData* sharedData = static_cast<SharedData*>(region.get_address());
 
-    while (inputFile.read(sharedData->buffer, sizeof(SharedData)))
-    {
-        inputFile.read(sharedData->buffer, sizeof(sharedData->buffer));
-        interprocess_mutex mutex(open_or_create);
-        scoped_lock<interprocess_mutex> lock(mutex);
-        sharedData += sizeof(SharedData);
-        ++sharedData->chunkIndex;
-        sharedData->dataExist = true;
-    }
 
-    size_t lastChunkSize = inputFile.gcount();
+    std::vector<char> buffer(chunk_size);
 
-    if (lastChunkSize > 0) 
+    while (true)
     {
-        inputFile.read(sharedData->buffer, sizeof(sharedData->buffer));
-        interprocess_mutex mutex(open_or_create);
-        scoped_lock<interprocess_mutex> lock(mutex);
+        scoped_lock<interprocess_mutex> lock(sharedData->mutex);
+
+        if (!sharedData->ready)
+        {
+            inputFile.read(buffer.data(), buffer.size());
+
+            std::size_t bytes_read = inputFile.gcount();
+            if (bytes_read == 0)
+            {
+                sharedData->chunk_size = 0;
+                sharedData->ready = true;
+                break;
+            }
+
+            std::memcpy(sharedData->data, buffer.data(), bytes_read);
+            sharedData->chunk_size = bytes_read;
+            sharedData->ready = true;
+        }
     }
 
     inputFile.close();

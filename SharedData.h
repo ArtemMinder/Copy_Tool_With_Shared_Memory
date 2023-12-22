@@ -1,8 +1,13 @@
 #pragma once
 
-struct SharedData 
+#include <boost/interprocess/sync/interprocess_mutex.hpp>
+
+const std::size_t chunk_size = 1024 * 1024;
+
+volatile struct SharedData 
 {
-    char buffer[1048576];
-    int chunkIndex = 0;
-    bool dataExist = false;
+    bool ready;
+    char data[chunk_size];
+    std::size_t chunk_size;
+    boost::interprocess::interprocess_mutex mutex;
 };

@@ -6,7 +6,6 @@ set fileSize=100000000
 echo Creating %fileName%...
 
 fsutil file createnew %fileName% %fileSize%
-echo 123//////////\\\\\\\\\\\\321 >> %fileName%
 
 echo File creation completed.
 
