@@ -2,7 +2,6 @@
 #include "SharedData.h"
 #include <iostream>
 #include <fstream>
-#include <thread> 
 #include <vector>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
@@ -23,7 +22,6 @@ void FileWriter::processFile(const char* inputFileName, const char* outputFileNa
     sharedMemory.truncate(sizeof(SharedData));
     mapped_region region(sharedMemory, read_write);
     SharedData* sharedData = static_cast<SharedData*>(region.get_address());
-
 
     std::vector<char> buffer(chunk_size);
 
@@ -46,6 +44,7 @@ void FileWriter::processFile(const char* inputFileName, const char* outputFileNa
             std::memcpy(sharedData->data, buffer.data(), bytes_read);
             sharedData->chunk_size = bytes_read;
             sharedData->ready = true;
+            break;
         }
     }
 

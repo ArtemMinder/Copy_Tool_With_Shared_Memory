@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	}
 
 	FileProcessor* processor = factory->createFileProcessor();
-	processor->processFile(inputFileName, outputFileName, sharedMemoryObjectName);
+   	processor->processFile(inputFileName, outputFileName, sharedMemoryObjectName);
 
 	delete processor;
 	delete factory;
